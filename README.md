@@ -1,78 +1,112 @@
-# Agentic AI Learning
+# Agentic AI Learning Hub
 
-Welcome to the **Agentic AI Learning Hub** - a comprehensive educational platform for learning and mastering agentic AI systems.
+A practical AI learning platform for querying course information and exploring agentic AI capabilities using LangChain, Groq, and Tavily.
 
-## Overview
+## Code Overview
 
-This repository contains learning materials, code examples, and projects for understanding:
-- **Agentic AI Fundamentals**
-- **Agent Development Frameworks** (LangChain, LangGraph, CrewAI, AutoGen)
-- **MLOps & Production Deployment**
-- **Advanced Agent Patterns**
+### Core Components
 
-## Course Offerings
+#### 1. Course Database
+The application maintains an internal `COURSE_DB` with three featured courses:
 
-### Agentic AI
-- **Duration**: 12 weeks
-- **Level**: Intermediate to Advanced
-- **Focus**: Building production-style agents with tools, memory, routing, and control flows
-- **Tools**: LangChain, LangGraph, CrewAI, AutoGen, FastAPI, Vector Databases
+```python
+COURSE_DB = {
+    "agentic ai": {
+        "course_name": "Agentic AI",
+        "duration": "12 weeks",
+        "level": "Intermediate to Advanced",
+        "tools": ["LangChain", "LangGraph", "CrewAI", ...],
+        "modules": ["Agent fundamentals", "Tool calling", ...],
+        "outcome": "Build production-style agents..."
+    },
+    "mlops": { ... },
+    "llmops": { ... }
+}
+```
 
-### MLOps
-- **Duration**: 14 weeks
-- **Level**: Advanced
-- **Focus**: Production ML systems, deployment, monitoring, and scaling
+#### 2. Course Lookup Tool
+A Pydantic-based tool for querying course information:
 
-## Getting Started
+```python
+@tool(args_schema=CcourseLookupInput)
+def get_internal_course_info(course_name: str, include_modules: bool = True) -> str:
+    """Look up information about a course from the internal COURSE_DB."""
+    # Handle aliases and lookups
+    key = aliases.get(key, key)
+    data = COURSE_DB.get(key)
+    # Return formatted course details
+```
+
+**Usage:**
+```python
+get_internal_course_info("Agentic AI", include_modules=True)
+```
+
+**Output:**
+```
+Course Name: Agentic AI
+Duration: 12 weeks
+Level: Intermediate to Advanced
+Tools: LangChain, LangGraph, CrewAI, AutoGen, FastAPI, Vector Databases
+Modules: Agent fundamentals, Tool calling, Planning and routing, ...
+Outcome: Build production-style agents with tools, memory, routing, and control flows.
+```
+
+#### 3. AI Agent Configuration
+The application uses Groq's LLM with integrated tools:
+
+```python
+# Initialize LLM
+model = ChatGroq(model=MODEL_NAME, temperature=0, max_retries=2)
+
+# Initialize web search
+web_search = TavilySearch(max_results=5, topic="general", search_depth="advanced")
+
+# Tools available: get_internal_course_info, web_search
+```
+
+## Setup
 
 ### Prerequisites
 - Python 3.8+
-- pip or conda
-- API keys (GROQ, Tavily)
+- API Keys:
+  - `GROQ_API_KEY` - Get from https://console.groq.com
+  - `TAVILY_API_KEY` - Get from https://tavily.com
 
 ### Installation
 
 ```bash
-# Clone this repository
-git clone https://github.com/scaLearningHub/agentic_ai_learning.git
+# Clone and setup
+git clone https://github.com/scai-learning-hub/agentic_ai_learning.git
 cd agentic_ai_learning
 
 # Create virtual environment
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate  # Windows: venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
 
-# Setup environment variables
+# Configure environment
 cp .env.example .env
 # Edit .env with your API keys
 ```
 
-## Project Structure
-
+### Environment Variables (`.env`)
 ```
-agentic_ai_learning/
-├── main.py              # Main learning hub entry point
-├── requirements.txt     # Project dependencies
-├── .env.example         # Example environment variables
-├── README.md           # This file
-└── [additional modules]
-```
-
-## Environment Variables
-
-Create a `.env` file with the following:
-
-```
-GROQ_API_KEY=your_groq_key
-TAVILY_API_KEY=your_tavily_key
+GROQ_API_KEY=your_groq_api_key_here
+TAVILY_API_KEY=your_tavily_api_key_here
 MODEL_NAME=mixtral-8x7b-32768
+```
+
+## Running the Application
+
+```bash
+python main.py
 ```
 
 ## Contributing
 
-We welcome contributions! Please:
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Commit your changes (`git commit -m 'Add amazing feature'`)
@@ -81,12 +115,8 @@ We welcome contributions! Please:
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Contact
-
-For questions and support, reach out to the scaLearningHub team.
+MIT License - See [LICENSE](LICENSE) file for details.
 
 ---
 
-**Happy Learning!** 🚀
+Built with ❤️ by scaLearningHub
